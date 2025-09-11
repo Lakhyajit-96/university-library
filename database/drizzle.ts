@@ -1,7 +1,11 @@
-import config from "@/lib/config";
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 
-const sql = neon(config.env.databaseUrl);
+// Ensure DATABASE_URL is available
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL environment variable is not set");
+}
 
-export const db = drizzle({ client: sql, casing: "snake_case" });
+// Create a connection that's compatible with Edge Runtime
+const sql = neon(process.env.DATABASE_URL);
+export const db = drizzle({ client: sql });

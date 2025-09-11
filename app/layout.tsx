@@ -24,9 +24,9 @@ const bebasNeue = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "BookWise",
+  title: "LearnWise",
   description:
-    "BookWise is a book borrowing university library management solution.",
+    "LearnWise is a modern learning management platform for educational institutions.",
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
