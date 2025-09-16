@@ -1,0 +1,1 @@
+ALTER TABLE "borrow_records" ADD COLUMN "verification_status" "verification_status" DEFAULT 'UNVERIFIED' NOT NULL;

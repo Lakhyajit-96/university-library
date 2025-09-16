@@ -1,6 +1,6 @@
 import dummyBooks from "../dummybooks.json";
 import ImageKit from "imagekit";
-import { books } from "@/database/schema";
+import { books, borrowRecords } from "@/database/schema";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { config } from "dotenv";
@@ -38,18 +38,44 @@ const seed = async () => {
   console.log("Seeding data...");
 
   try {
+    // Clear existing borrow records first (due to foreign key constraints)
+    console.log("Clearing existing borrow records...");
+    await db.delete(borrowRecords);
+    
+    // Clear existing books
+    console.log("Clearing existing books...");
+    await db.delete(books);
+    
     for (const book of dummyBooks) {
-      const coverUrl = (await uploadToImageKit(
-        book.coverUrl,
-        `${book.title}.jpg`,
-        "/books/covers",
-      )) as string;
+      let coverUrl = book.coverUrl;
+      let videoUrl = book.videoUrl;
 
-      const videoUrl = (await uploadToImageKit(
-        book.videoUrl,
-        `${book.title}.mp4`,
-        "/books/videos",
-      )) as string;
+      // Try to upload to ImageKit, but use original URL if it fails
+      try {
+        const uploadedCoverUrl = await uploadToImageKit(
+          book.coverUrl,
+          `${book.title}.jpg`,
+          "/books/covers",
+        );
+        if (uploadedCoverUrl) {
+          coverUrl = uploadedCoverUrl;
+        }
+      } catch (error) {
+        console.log(`Using original cover URL for ${book.title}`);
+      }
+
+      try {
+        const uploadedVideoUrl = await uploadToImageKit(
+          book.videoUrl,
+          `${book.title}.mp4`,
+          "/books/videos",
+        );
+        if (uploadedVideoUrl) {
+          videoUrl = uploadedVideoUrl;
+        }
+      } catch (error) {
+        console.log(`Using original video URL for ${book.title}`);
+      }
 
       await db.insert(books).values({
         ...book,

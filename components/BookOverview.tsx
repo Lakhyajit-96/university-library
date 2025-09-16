@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import BookCover from "@/components/BookCover";
 import BorrowBook from "@/components/BorrowBook";
 import { db } from "@/database/drizzle";
@@ -37,7 +38,7 @@ const BookOverview = async ({
   };
   return (
     <section className="book-overview">
-      <div className="flex flex-1 flex-col gap-5">
+      <div className="flex flex-1 flex-col gap-5 max-w-lg">
         <h1>{title}</h1>
 
         <div className="book-info">
@@ -52,7 +53,7 @@ const BookOverview = async ({
 
           <div className="flex flex-row gap-1">
             <Image src="/icons/star.svg" alt="star" width={22} height={22} />
-            <p>{rating}</p>
+            <p>{rating}/5</p>
           </div>
         </div>
 
@@ -79,14 +80,16 @@ const BookOverview = async ({
 
       <div className="relative flex flex-1 justify-center">
         <div className="relative">
-          <BookCover
-            variant="wide"
-            className="z-10"
-            coverColor={coverColor}
-            coverImage={coverUrl}
-          />
+          <Link href={`/books/${id}`} className="block">
+            <BookCover
+              variant="wide"
+              className="z-10 book-3d-hero cursor-pointer"
+              coverColor={coverColor}
+              coverImage={coverUrl}
+            />
+          </Link>
 
-          <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden">
+          <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden book-3d-hero">
             <BookCover
               variant="wide"
               coverColor={coverColor}

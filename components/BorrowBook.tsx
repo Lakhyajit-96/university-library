@@ -41,10 +41,12 @@ const BorrowBook = ({
       if (result.success) {
         toast({
           title: "Success",
-          description: "Book borrowed successfully",
+          description: result.verificationStatus === "VERIFIED" 
+            ? "Book borrowed successfully! You can read it now." 
+            : "Book borrowed successfully! Complete verification to read.",
         });
 
-        router.push("/");
+        router.push("/my-profile");
       } else {
         toast({
           title: "Error",
@@ -71,7 +73,7 @@ const BorrowBook = ({
     >
       <Image src="/icons/book.svg" alt="book" width={20} height={20} />
       <p className="font-bebas-neue text-xl text-dark-100">
-        {borrowing ? "Borrowing ..." : "Borrow Book"}
+        {borrowing ? "Borrowing ..." : "Borrow book request"}
       </p>
     </Button>
   );

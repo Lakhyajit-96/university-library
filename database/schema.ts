@@ -20,6 +20,13 @@ export const BORROW_STATUS_ENUM = pgEnum("borrow_status", [
   "RETURNED",
 ]);
 
+export const VERIFICATION_STATUS_ENUM = pgEnum("verification_status", [
+  "UNVERIFIED",
+  "PENDING_VERIFICATION", 
+  "VERIFIED",
+  "REJECTED",
+]);
+
 export const users = pgTable("users", {
   id: uuid("id").notNull().primaryKey().defaultRandom().unique(),
   fullName: varchar("full_name", { length: 255 }).notNull(),
@@ -27,8 +34,16 @@ export const users = pgTable("users", {
   universityId: integer("university_id").notNull().unique(),
   password: text("password").notNull(),
   universityCard: text("university_card").notNull(),
+  profilePicture: text("profile_picture"),
+  department: varchar("department", { length: 255 }),
+  dateOfBirth: date("date_of_birth"),
+  contactNumber: varchar("contact_number", { length: 20 }),
   status: STATUS_ENUM("status").default("PENDING"),
   role: ROLE_ENUM("role").default("USER"),
+  verificationStatus: VERIFICATION_STATUS_ENUM("verification_status").default("UNVERIFIED"),
+  verificationSteps: text("verification_steps"), // JSON string of completed steps
+  verificationDocuments: text("verification_documents"), // JSON string of uploaded documents
+  verificationDate: timestamp("verification_date", { withTimezone: true }),
   lastActivityDate: date("last_activity_date").defaultNow(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
@@ -48,6 +63,7 @@ export const books = pgTable("books", {
   availableCopies: integer("available_copies").notNull().default(0),
   videoUrl: text("video_url").notNull(),
   summary: varchar("summary").notNull(),
+  content: text("content"), // Full book content for reading
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -65,5 +81,6 @@ export const borrowRecords = pgTable("borrow_records", {
   dueDate: date("due_date").notNull(),
   returnDate: date("return_date"),
   status: BORROW_STATUS_ENUM("status").default("BORROWED").notNull(),
+  verificationStatus: VERIFICATION_STATUS_ENUM("verification_status").default("UNVERIFIED").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });

@@ -9,7 +9,12 @@ const BookVideo = ({ videoUrl }: { videoUrl: string }) => {
       publicKey={config.env.imagekit.publicKey}
       urlEndpoint={config.env.imagekit.urlEndpoint}
     >
-      <IKVideo path={videoUrl} controls={true} className="w-full rounded-xl" />
+      <IKVideo 
+        path={videoUrl} 
+        controls={true} 
+        className="rounded-xl"
+        style={{ width: '645px', height: '396px' }}
+      />
     </ImageKitProvider>
   );
 };
